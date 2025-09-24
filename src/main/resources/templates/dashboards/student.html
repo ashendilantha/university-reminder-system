@@ -1,0 +1,437 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head th:replace="fragments/layout :: head('Student Dashboard')">-->
+<!--    <title>Student Dashboard - University Reminder System</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <nav th:replace="fragments/layout :: navbar"></nav>-->
+<!--    -->
+<!--    <div th:replace="fragments/layout :: alerts"></div>-->
+<!--    -->
+<!--    <div class="container py-4">-->
+<!--        <h1 class="mb-4">Welcome, <span th:text="${student.firstName}">Student</span>!</h1>-->
+<!--        -->
+<!--        <div class="row">-->
+<!--            <div class="col-md-4">-->
+<!--                <div class="card mb-4 text-white bg-primary">-->
+<!--                    <div class="card-body text-center">-->
+<!--                        <h3 class="card-title">My Bills</h3>-->
+<!--                        <h2 class="display-4" th:text="${billCount}">0</h2>-->
+<!--                        <p><span th:text="${pendingBillCount}">0</span> pending bills</p>-->
+<!--                        <a th:href="@{/bills?me=true}" class="btn btn-light">View All</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            -->
+<!--            <div class="col-md-4">-->
+<!--                <div class="card mb-4 text-white bg-success">-->
+<!--                    <div class="card-body text-center">-->
+<!--                        <h3 class="card-title">Upcoming Events</h3>-->
+<!--                        <h2 class="display-4" th:text="${upcomingEventsCount}">0</h2>-->
+<!--                        <p>Events in the next 30 days</p>-->
+<!--                        <a th:href="@{/events?upcoming=true}" class="btn btn-light">View All</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            -->
+<!--            <div class="col-md-4">-->
+<!--                <div class="card mb-4 text-white bg-warning">-->
+<!--                    <div class="card-body text-center">-->
+<!--                        <h3 class="card-title">My Reviews</h3>-->
+<!--                        <h2 class="display-4" th:text="${reviewCount}">0</h2>-->
+<!--                        <p>Reviews submitted</p>-->
+<!--                        <a th:href="@{/student/reviews}" class="btn btn-light">View All</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        -->
+<!--        <div class="row">-->
+<!--            <div class="col-md-6">-->
+<!--                <div class="card mb-4">-->
+<!--                    <div class="card-header bg-primary text-white">-->
+<!--                        <h5 class="mb-0">Active Bill Notices</h5>-->
+<!--                    </div>-->
+<!--                    <div class="card-body">-->
+<!--                        <div class="list-group">-->
+<!--                            <div th:each="notice : ${activeBillNotices}" class="list-group-item list-group-item-action">-->
+<!--                                <div class="d-flex w-100 justify-content-between">-->
+<!--                                    <h5 class="mb-1" th:text="${notice.title}">Bill Notice Title</h5>-->
+<!--                                    <small th:text="'Valid until: ' + ${#temporals.format(notice.validTo, 'yyyy-MM-dd')}">2025-10-01</small>-->
+<!--                                </div>-->
+<!--                                <p class="mb-1" th:text="${notice.message}">Bill notice details here...</p>-->
+<!--                            </div>-->
+<!--                            <div th:if="${activeBillNotices.empty}" class="list-group-item text-center">-->
+<!--                                No active bill notices-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            -->
+<!--            <div class="col-md-6">-->
+<!--                <div class="card mb-4">-->
+<!--                    <div class="card-header bg-primary text-white">-->
+<!--                        <h5 class="mb-0">My Pending Bills</h5>-->
+<!--                    </div>-->
+<!--                    <div class="card-body">-->
+<!--                        <div class="table-responsive">-->
+<!--                            <table class="table table-hover">-->
+<!--                                <thead>-->
+<!--                                    <tr>-->
+<!--                                        <th>Amount</th>-->
+<!--                                        <th>Description</th>-->
+<!--                                        <th>Due Date</th>-->
+<!--                                        <th>Status</th>-->
+<!--                                        <th>Actions</th>-->
+<!--                                    </tr>-->
+<!--                                </thead>-->
+<!--                                <tbody>-->
+<!--                                    <tr th:each="bill : ${pendingBills}">-->
+<!--                                        <td th:text="${bill.amount}">$100.00</td>-->
+<!--                                        <td th:text="${bill.description}">Bill description</td>-->
+<!--                                        <td th:text="${#temporals.format(bill.dueDate, 'yyyy-MM-dd')}">2025-10-01</td>-->
+<!--                                        <td>-->
+<!--                                            <span class="badge bg-warning" th:if="${bill.status == 'PENDING'}">Pending</span>-->
+<!--                                            <span class="badge bg-success" th:if="${bill.status == 'ACCEPTED'}">Accepted</span>-->
+<!--                                            <span class="badge bg-info" th:if="${bill.status == 'PAID'}">Paid</span>-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <a th:href="@{/bills/{id}(id=${bill.id})}" class="btn btn-sm btn-primary">View</a>-->
+<!--                                            <a th:href="@{/bills/{id}/edit(id=${bill.id})}" class="btn btn-sm btn-warning"-->
+<!--                                               th:if="${bill.editableUntil.isAfter(#temporals.createNow())}">Edit</a>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
+<!--                                    <tr th:if="${pendingBills.empty}">-->
+<!--                                        <td colspan="5" class="text-center">No pending bills</td>-->
+<!--                                    </tr>-->
+<!--                                </tbody>-->
+<!--                            </table>-->
+<!--                        </div>-->
+<!--                        <div class="mt-3">-->
+<!--                            <a th:href="@{/bills/create}" class="btn btn-primary">-->
+<!--                                <i class="bi bi-plus-circle"></i> Add New Bill-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        -->
+<!--        <div class="row">-->
+<!--            <div class="col-md-12">-->
+<!--                <div class="card">-->
+<!--                    <div class="card-header bg-primary text-white">-->
+<!--                        <h5 class="mb-0">Upcoming Events</h5>-->
+<!--                    </div>-->
+<!--                    <div class="card-body">-->
+<!--                        <div class="row">-->
+<!--                            <div th:each="event : ${upcomingEvents}" class="col-md-4 mb-4">-->
+<!--                                <div class="card h-100">-->
+<!--                                    <div class="card-body">-->
+<!--                                        <h5 class="card-title" th:text="${event.title}">Event Title</h5>-->
+<!--                                        <h6 class="card-subtitle mb-2 text-muted" th:text="${event.venue}">Venue</h6>-->
+<!--                                        <p class="card-text" th:text="${event.description}">Event description...</p>-->
+<!--                                        <p class="card-text">-->
+<!--                                            <small class="text-muted">-->
+<!--                                                <i class="bi bi-calendar"></i> -->
+<!--                                                <span th:text="${#temporals.format(event.startsAt, 'yyyy-MM-dd HH:mm')}">2025-10-01 09:00</span>-->
+<!--                                                <br>-->
+<!--                                                <i class="bi bi-clock"></i> -->
+<!--                                                <span th:text="${#temporals.format(event.startsAt, 'HH:mm')} + ' - ' + ${#temporals.format(event.endsAt, 'HH:mm')}">-->
+<!--                                                    09:00 - 11:00-->
+<!--                                                </span>-->
+<!--                                            </small>-->
+<!--                                        </p>-->
+<!--                                    </div>-->
+<!--                                    <div class="card-footer">-->
+<!--                                        <a th:href="@{/events/{id}(id=${event.id})}" class="btn btn-sm btn-primary">View Details</a>-->
+<!--                                        <a th:href="@{/student/reviews/create?eventId={id}(id=${event.id})}" class="btn btn-sm btn-outline-primary">Add Review</a>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div th:if="${upcomingEvents.empty}" class="col-12 text-center">-->
+<!--                                <p>No upcoming events</p>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    -->
+<!--    <footer th:replace="fragments/layout :: footer"></footer>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-bs-theme="dark">
+<head th:replace="fragments/layout :: head('Student Dashboard')">
+    <title>Student Dashboard - University Reminder System</title>
+</head>
+<body>
+<nav th:replace="fragments/layout :: navbar" class="navbar navbar-expand-lg navbar-dark fixed-top"></nav>
+<div th:replace="fragments/layout :: alerts"></div>
+
+<!-- Theme styles aligned with index.html; no extra buttons/validation added -->
+<style>
+    :root{
+        --primary:#2C3E50;--primary-dark:#1a2530;--primary-light:#34495e;
+        --secondary:#1ABC9C;--secondary-light:#3498DB;
+        --accent:#E67E22;--accent-alt:#2ECC71;
+        --error:#E74C3C;--warning:#F1C40F;
+        --background:#121212;--background-alt:#1e1e1e;
+        --card-bg:#1e2a38;--text-primary:#e4e6eb;--text-secondary:#b0b3b8;--white:#FFFFFF;--dark:#0d1117;
+    }
+    body{
+        background-color:var(--background);color:var(--text-primary);
+        min-height:100vh;display:flex;flex-direction:column;
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;line-height:1.6;
+        padding-top:72px;
+    }
+    .navbar{background-color:var(--primary-dark)!important;box-shadow:0 2px 15px rgba(0,0,0,.4);padding:.8rem 1rem}
+    .navbar-brand,.nav-link{color:var(--white)!important;font-weight:500}
+    .navbar-nav .nav-link:hover{color:var(--secondary)!important}
+
+    /* Header strip */
+    .page-header{
+        background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);
+        border-radius:0 0 24px 24px;color:var(--white);
+        padding:2.25rem 1rem;margin:-24px 0 2rem;position:relative;overflow:hidden;
+        box-shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+    .page-header::before{
+        content:'';position:absolute;inset:0;opacity:.35;
+        background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%231ABC9C' fill-opacity='0.25' d='M0,128L48,117.3C96,107,192,85,288,112C384,139,480,213,576,218.7C672,224,768,160,864,138.7C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") center/cover no-repeat;
+    }
+    .page-title{
+        font-weight:800;margin:0;
+        background:linear-gradient(to right,var(--white),var(--secondary));
+        -webkit-background-clip:text;-webkit-text-fill-color:transparent
+    }
+
+    /* Cards */
+    .card{
+        background-color:var(--card-bg);border:none;border-radius:16px;overflow:hidden;
+        box-shadow:0 12px 30px rgba(0,0,0,.28);transition:transform .3s ease, box-shadow .3s ease
+    }
+    .card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,.35)}
+    .card-header{
+        background:linear-gradient(135deg,var(--secondary) 0%,var(--secondary-light) 100%)!important;
+        color:#0d1117;border:none
+    }
+    .card-body{padding:1.75rem}
+    .card-footer{background:rgba(255,255,255,.03);border-top:1px solid rgba(255,255,255,.08)}
+
+    /* Metric tiles */
+    .metric{
+        background:linear-gradient(135deg, rgba(26,188,156,.25), rgba(52,152,219,.2));
+        border:1px solid rgba(255,255,255,.08);border-radius:16px;
+    }
+    .metric h3{color:var(--white);font-weight:700}
+    .metric .display-4{font-weight:800}
+
+    /* Buttons */
+    .btn-primary{
+        background:linear-gradient(135deg,var(--accent) 0%,var(--accent-alt) 100%);
+        border:none;font-weight:600;border-radius:50px;
+        transition:all .3s ease;box-shadow:0 4px 15px rgba(230,126,34,.3);position:relative;overflow:hidden;z-index:1
+    }
+    .btn-primary::before{
+        content:'';position:absolute;inset:0;width:0%;height:100%;
+        background:linear-gradient(135deg,var(--accent-alt) 0%,var(--accent) 100%);
+        transition:all .5s ease;z-index:-1;border-radius:50px
+    }
+    .btn-primary:hover::before{width:100%}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(230,126,34,.4)}
+    .btn-light{color:#0d1117;border-radius:12px}
+    .btn-warning{background-color:#b58900;border:none;color:#fff;border-radius:12px}
+    .btn-outline-primary{border-radius:12px}
+    .btn-sm{padding:.25rem .5rem;font-size:.875rem;border-radius:10px} /* keep actions small */
+
+    /* Table & list */
+    .table{color:var(--text-primary);margin-bottom:0}
+    .table thead th{
+        border-bottom:1px solid rgba(255,255,255,.08);
+        color:var(--white);font-weight:600;background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(0,0,0,0))
+    }
+    .table td,.table th{border-color:rgba(255,255,255,.08);vertical-align:middle}
+    .table-hover tbody tr:hover{background-color:rgba(255,255,255,.03)}
+    th:last-child, td:last-child{white-space:nowrap}
+    .list-group-item{background:var(--background-alt);color:var(--text-primary);border:1px solid rgba(255,255,255,.08)}
+
+    /* Badges */
+    .badge{padding:.5em .7em;border-radius:10px;font-weight:600}
+    .badge.bg-success{background:linear-gradient(135deg,#1f9d78,#2ECC71)}
+    .badge.bg-warning{background:linear-gradient(135deg,#c9a400,#F1C40F);color:#0d1117}
+    .badge.bg-info{background:linear-gradient(135deg,#1e90ff,#6ac0ff)}
+
+    /* Animations */
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .animate{opacity:0;animation:fadeInUp .6s ease forwards}
+    .delay-1{animation-delay:.15s}.delay-2{animation-delay:.3s}
+</style>
+
+<div class="container py-4">
+    <!-- Fancy header -->
+    <div class="page-header animate">
+        <div class="container px-0">
+            <h1 class="page-title">Welcome, <span th:text="${student.firstName}">Student</span>!</h1>
+        </div>
+    </div>
+
+    <!-- Metrics -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card metric mb-4 text-center animate delay-1">
+                <div class="card-body">
+                    <h3 class="card-title">My Bills</h3>
+                    <h2 class="display-4" th:text="${billCount}">0</h2>
+                    <p class="text-muted"><span th:text="${pendingBillCount}">0</span> pending bills</p>
+                    <a th:href="@{/bills?me=true}" class="btn btn-light">View All</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card metric mb-4 text-center animate delay-1">
+                <div class="card-body">
+                    <h3 class="card-title">Upcoming Events</h3>
+                    <h2 class="display-4" th:text="${upcomingEventsCount}">0</h2>
+                    <p class="text-muted">Events in the next 30 days</p>
+                    <a th:href="@{/events?upcoming=true}" class="btn btn-light">View All</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card metric mb-4 text-center animate delay-1">
+                <div class="card-body">
+                    <h3 class="card-title">My Reviews</h3>
+                    <h2 class="display-4" th:text="${reviewCount}">0</h2>
+                    <p class="text-muted">Reviews submitted</p>
+                    <a th:href="@{/student/reviews}" class="btn btn-light">View All</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notices + Pending Bills -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4 animate delay-2">
+                <div class="card-header">
+                    <h5 class="mb-0">Active Bill Notices</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <div th:each="notice : ${activeBillNotices}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1" th:text="${notice.title}">Bill Notice Title</h5>
+                                <small th:text="'Valid until: ' + ${#temporals.format(notice.validTo, 'yyyy-MM-dd')}">2025-10-01</small>
+                            </div>
+                            <p class="mb-1" th:text="${notice.message}">Bill notice details here...</p>
+                        </div>
+                        <div th:if="${activeBillNotices.empty}" class="list-group-item text-center">
+                            No active bill notices
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-4 animate delay-2">
+                <div class="card-header">
+                    <h5 class="mb-0">My Pending Bills</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                            <tr>
+                                <th>Amount</th>
+                                <th>Description</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="bill : ${pendingBills}">
+                                <td th:text="${bill.amount}">$100.00</td>
+                                <td th:text="${bill.description}">Bill description</td>
+                                <td th:text="${#temporals.format(bill.dueDate, 'yyyy-MM-dd')}">2025-10-01</td>
+                                <td>
+                                    <span class="badge bg-warning" th:if="${bill.status == 'PENDING'}">Pending</span>
+                                    <span class="badge bg-success" th:if="${bill.status == 'ACCEPTED'}">Accepted</span>
+                                    <span class="badge bg-info" th:if="${bill.status == 'PAID'}">Paid</span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/bills/{id}(id=${bill.id})}" class="btn btn-sm btn-primary">View</a>
+                                    <a th:href="@{/bills/{id}/edit(id=${bill.id})}" class="btn btn-sm btn-warning"
+                                       th:if="${bill.editableUntil.isAfter(#temporals.createNow())}">Edit</a>
+                                </td>
+                            </tr>
+                            <tr th:if="${pendingBills.empty}">
+                                <td colspan="5" class="text-center text-muted">No pending bills</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-3">
+                        <a th:href="@{/bills/create}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Add New Bill
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Events -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card animate delay-2">
+                <div class="card-header">
+                    <h5 class="mb-0">Upcoming Events</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div th:each="event : ${upcomingEvents}" class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${event.title}">Event Title</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted" th:text="${event.venue}">Venue</h6>
+                                    <p class="card-text" th:text="${event.description}">Event description...</p>
+                                    <p class="card-text">
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar"></i>
+                                            <span th:text="${#temporals.format(event.startsAt, 'yyyy-MM-dd HH:mm')}">2025-10-01 09:00</span>
+                                            <br>
+                                            <i class="bi bi-clock"></i>
+                                            <span th:text="${#temporals.format(event.startsAt, 'HH:mm')} + ' - ' + ${#temporals.format(event.endsAt, 'HH:mm')}">
+                                                    09:00 - 11:00
+                                                </span>
+                                        </small>
+                                    </p>
+                                </div>
+                                <div class="card-footer d-flex gap-2">
+                                    <a th:href="@{/events/{id}(id=${event.id})}" class="btn btn-sm btn-primary">View Details</a>
+                                    <a th:href="@{/student/reviews/create?eventId={id}(id=${event.id})}" class="btn btn-sm btn-outline-primary">Add Review</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div th:if="${upcomingEvents.empty}" class="col-12 text-center">
+                            <p class="text-muted">No upcoming events</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="fragments/layout :: footer" class="mt-auto"></footer>
+</body>
+</html>

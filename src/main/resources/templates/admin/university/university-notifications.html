@@ -1,0 +1,220 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head th:replace="~{fragments/layout :: head('Notifications')}">-->
+<!--    <title>Notifications - University Reminder System</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<nav th:replace="~{fragments/layout :: navbar}"></nav>-->
+
+<!--<div th:replace="~{fragments/layout :: alerts}"></div>-->
+
+<!--<div class="container py-4">-->
+<!--    <div class="d-flex justify-content-between align-items-center mb-4">-->
+<!--        <div>-->
+<!--            <h1>Notifications</h1>-->
+<!--            <h6 class="text-muted" th:text="${university.name}">University Name</h6>-->
+<!--        </div>-->
+<!--        -->
+<!--    </div>-->
+
+<!--    <div class="card">-->
+<!--        <div class="card-body">-->
+<!--            <div class="table-responsive">-->
+<!--                <table class="table table-hover">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <th>Title</th>-->
+<!--                            <th>Type</th>-->
+<!--                            <th>Message</th>-->
+<!--                            <th>Created At</th>-->
+<!--                            <th>Status</th>-->
+<!--                            <th>Actions</th>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody>-->
+<!--                        <tr th:each="notification : ${notifications}">-->
+<!--                            <td th:text="${notification.title}">Notification Title</td>-->
+<!--                            <td th:text="${notification.type}">TYPE</td>-->
+<!--                            <td th:text="${notification.body}">Notification body</td>-->
+<!--                            <td th:text="${#temporals.format(notification.createdAt, 'yyyy-MM-dd HH:mm')}">2025-09-22 10:00</td>-->
+<!--                            <td>-->
+<!--                                <span class="badge bg-success" th:if="${notification.readAt != null}">Read</span>-->
+<!--                                <span class="badge bg-warning" th:if="${notification.readAt == null}">Unread</span>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <form th:action="@{/admin/university/notifications/{id}/delete(id=${notification.id})}" method="post" style="display: inline;">-->
+<!--                                    <button type="submit" class="btn btn-sm btn-danger"-->
+<!--                                            onclick="return confirm('Delete this notification permanently?')">-->
+<!--                                        <i class="bi bi-trash"></i> Delete-->
+<!--                                    </button>-->
+<!--                                </form>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--                        <tr th:if="${notifications.empty}">-->
+<!--                            <td colspan="6" class="text-center">No notifications available</td>-->
+<!--                        </tr>-->
+<!--                    </tbody>-->
+<!--                </table>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<footer th:replace="~{fragments/layout :: footer}"></footer>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-bs-theme="dark">
+<head th:replace="~{fragments/layout :: head('Notifications')}">
+    <title>Notifications - University Reminder System</title>
+</head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}" class="navbar navbar-expand-lg navbar-dark fixed-top"></nav>
+
+<div th:replace="~{fragments/layout :: alerts}"></div>
+
+<!-- Page Styles (match index.html theme; keep action buttons normal size) -->
+<style>
+    :root{
+        --primary:#2C3E50;--primary-dark:#1a2530;--primary-light:#34495e;
+        --secondary:#1ABC9C;--secondary-light:#3498DB;
+        --accent:#E67E22;--accent-alt:#2ECC71;
+        --error:#E74C3C;--warning:#F1C40F;
+        --background:#121212;--background-alt:#1e1e1e;
+        --card-bg:#1e2a38;--text-primary:#e4e6eb;--text-secondary:#b0b3b8;--white:#FFFFFF;--dark:#0d1117;
+    }
+    body{
+        background-color:var(--background);color:var(--text-primary);
+        min-height:100vh;display:flex;flex-direction:column;
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;line-height:1.6;
+        padding-top:72px;
+    }
+    .navbar{background-color:var(--primary-dark)!important;box-shadow:0 2px 15px rgba(0,0,0,.4);padding:.8rem 1rem}
+    .navbar-brand,.nav-link{color:var(--white)!important;font-weight:500}
+    .navbar-nav .nav-link:hover{color:var(--secondary)!important}
+
+    /* Header strip */
+    .page-header{
+        background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);
+        border-radius:0 0 24px 24px;color:var(--white);
+        padding:2.25rem 1rem;margin:-24px 0 2rem;position:relative;overflow:hidden;
+        box-shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+    .page-header::before{
+        content:'';position:absolute;inset:0;opacity:.35;
+        background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%231ABC9C' fill-opacity='0.25' d='M0,128L48,117.3C96,107,192,85,288,112C384,139,480,213,576,218.7C672,224,768,160,864,138.7C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") center/cover no-repeat;
+    }
+    .page-title{
+        font-weight:800;margin:0;background:linear-gradient(to right,var(--white),var(--secondary));
+        -webkit-background-clip:text;-webkit-text-fill-color:transparent
+    }
+    .page-sub{color:var(--text-secondary);font-weight:300;margin-top:.25rem}
+
+    /* Card & table */
+    .card{
+        background-color:var(--card-bg);border:none;border-radius:15px;overflow:hidden;
+        transition:all .3s ease;box-shadow:0 8px 20px rgba(0,0,0,.2)
+    }
+    .card:hover{transform:translateY(-6px);box-shadow:0 15px 30px rgba(0,0,0,.3)}
+    .card-body{padding:1.5rem 1.5rem}
+
+    .table{color:var(--text-primary);margin-bottom:0}
+    .table thead th{
+        border-bottom:1px solid rgba(255,255,255,.08);
+        color:var(--white);font-weight:600;background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(0,0,0,0))
+    }
+    .table tbody tr{transition:background-color .2s}
+    .table-hover tbody tr:hover{background-color:rgba(255,255,255,.03)}
+    .table td,.table th{border-color:rgba(255,255,255,.08);vertical-align:middle}
+
+    /* Badges */
+    .badge{padding:.5em .7em;border-radius:10px;font-weight:600}
+    .badge.bg-success{background:linear-gradient(135deg,#1f9d78,#2ECC71)}
+    .badge.bg-warning{background:linear-gradient(135deg,#c9a400,#F1C40F);color:#0d1117}
+
+    /* Buttons (keep .btn-sm normal size) */
+    .btn-secondary{
+        background-color:var(--primary-light);border:none;color:var(--white);
+        border-radius:50px;transition:transform .2s, box-shadow .2s
+    }
+    .btn-secondary:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(0,0,0,.25)}
+
+    .btn-danger{border-radius:12px}
+
+    /* Animations */
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .animate{opacity:0;animation:fadeInUp .6s ease forwards}
+    .delay-1{animation-delay:.15s}.delay-2{animation-delay:.3s}
+</style>
+
+<div class="container py-4">
+    <!-- Fancy header bar -->
+    <div class="page-header animate">
+        <div class="container px-0">
+            <h1 class="page-title">Notifications</h1>
+            <h6 class="page-sub" th:text="${university.name}">University Name</h6>
+        </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="card animate delay-1">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Message</th>
+                        <th>Created At</th>
+                        <th>Status</th>
+                        <th style="width: 150px;">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="notification : ${notifications}">
+                        <td th:text="${notification.title}">Notification Title</td>
+                        <td th:text="${notification.type}">TYPE</td>
+                        <td th:text="${notification.body}">Notification body</td>
+                        <td th:text="${#temporals.format(notification.createdAt, 'yyyy-MM-dd HH:mm')}">2025-09-22 10:00</td>
+                        <td>
+                            <span class="badge bg-success" th:if="${notification.readAt != null}">Read</span>
+                            <span class="badge bg-warning" th:if="${notification.readAt == null}">Unread</span>
+                        </td>
+                        <td>
+                            <form th:action="@{/admin/university/notifications/{id}/delete(id=${notification.id})}" method="post" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Delete this notification permanently?')">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${notifications.empty}">
+                        <td colspan="6" class="text-center text-muted">No notifications available</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}" class="mt-auto"></footer>
+
+<!-- Small animation hook -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const animated = document.querySelectorAll('.animate');
+        const io = new IntersectionObserver((entries)=>{
+            entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('animated'); io.unobserve(e.target);} });
+        }, {threshold:0.1});
+        animated.forEach(el=>io.observe(el));
+    });
+</script>
+</body>
+</html>

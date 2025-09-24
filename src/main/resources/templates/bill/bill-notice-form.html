@@ -1,0 +1,242 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<head th:replace="fragments/layout :: head(${noticeId} != null ? 'Edit Bill Notice' : 'Create Bill Notice')">-->
+<!--    <title>Bill Notice Form - University Reminder System</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <nav th:replace="fragments/layout :: navbar"></nav>-->
+<!--    -->
+<!--    <div th:replace="fragments/layout :: alerts"></div>-->
+<!--    -->
+<!--    <div class="container py-4">-->
+<!--        <div class="d-flex justify-content-between align-items-center mb-4">-->
+<!--            <h1 th:text="${noticeId} != null ? 'Edit Bill Notice' : 'Create Bill Notice'">Bill Notice Form</h1>-->
+<!--            <a th:href="@{/admin/bill-notices}" class="btn btn-secondary">-->
+<!--                <i class="bi bi-arrow-left"></i> Back to Bill Notices-->
+<!--            </a>-->
+<!--        </div>-->
+<!--        -->
+<!--        <div class="card">-->
+<!--            <div class="card-body">-->
+<!--                <form th:action="${noticeId} != null ? @{/admin/bill-notices/{id}/edit(id=${noticeId})} : @{/admin/bill-notices/create}" -->
+<!--                      th:object="${notice}" method="post">-->
+<!--                    -->
+<!--                    <input type="hidden" th:field="*{universityId}">-->
+<!--                    -->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="title" class="form-label">Title *</label>-->
+<!--                        <input type="text" class="form-control" id="title" th:field="*{title}" required>-->
+<!--                        <div class="text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>-->
+<!--                    </div>-->
+<!--                    -->
+<!--                    <div class="mb-3">-->
+<!--                        <label for="message" class="form-label">Message *</label>-->
+<!--                        <textarea class="form-control" id="message" th:field="*{message}" rows="5" required></textarea>-->
+<!--                        <div class="text-danger" th:if="${#fields.hasErrors('message')}" th:errors="*{message}"></div>-->
+<!--                    </div>-->
+<!--                    -->
+<!--                    <div class="row">-->
+<!--                        <div class="col-md-6 mb-3">-->
+<!--                            <label for="validFrom" class="form-label">Valid From *</label>-->
+<!--                            <input type="date" class="form-control" id="validFrom" th:field="*{validFrom}" required>-->
+<!--                            <div class="text-danger" th:if="${#fields.hasErrors('validFrom')}" th:errors="*{validFrom}"></div>-->
+<!--                        </div>-->
+<!--                        -->
+<!--                        <div class="col-md-6 mb-3">-->
+<!--                            <label for="validTo" class="form-label">Valid To *</label>-->
+<!--                            <input type="date" class="form-control" id="validTo" th:field="*{validTo}" required>-->
+<!--                            <div class="text-danger" th:if="${#fields.hasErrors('validTo')}" th:errors="*{validTo}"></div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    -->
+<!--                    <div class="alert alert-info">-->
+<!--                        <i class="bi bi-info-circle"></i> -->
+<!--                        This notice will be visible to all students and parents in the university during the validity period.-->
+<!--                        Email notifications will be sent when the notice is created.-->
+<!--                    </div>-->
+<!--                    -->
+<!--                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">-->
+<!--                        <a th:href="@{/admin/bill-notices}" class="btn btn-secondary me-md-2">Cancel</a>-->
+<!--                        <button type="submit" class="btn btn-primary">Save</button>-->
+<!--                    </div>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    -->
+<!--    <footer th:replace="fragments/layout :: footer"></footer>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" data-bs-theme="dark">
+<head th:replace="fragments/layout :: head(${noticeId} != null ? 'Edit Bill Notice' : 'Create Bill Notice')">
+    <title>Bill Notice Form - University Reminder System</title>
+</head>
+<body>
+<nav th:replace="fragments/layout :: navbar" class="navbar navbar-expand-lg navbar-dark fixed-top"></nav>
+
+<div th:replace="fragments/layout :: alerts"></div>
+
+<!-- Page Styles (match index.html theme; keep default button sizes) -->
+<style>
+    :root{
+        --primary:#2C3E50;--primary-dark:#1a2530;--primary-light:#34495e;
+        --secondary:#1ABC9C;--secondary-light:#3498DB;
+        --accent:#E67E22;--accent-alt:#2ECC71;
+        --error:#E74C3C;--warning:#F1C40F;
+        --background:#121212;--background-alt:#1e1e1e;
+        --card-bg:#1e2a38;--text-primary:#e4e6eb;--text-secondary:#b0b3b8;--white:#FFFFFF;--dark:#0d1117;
+    }
+    body{
+        background-color:var(--background);color:var(--text-primary);
+        min-height:100vh;display:flex;flex-direction:column;
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;line-height:1.6;
+        padding-top:72px;
+    }
+    .navbar{background-color:var(--primary-dark)!important;box-shadow:0 2px 15px rgba(0,0,0,.4);padding:.8rem 1rem}
+    .navbar-brand,.nav-link{color:var(--white)!important;font-weight:500}
+    .navbar-nav .nav-link:hover{color:var(--secondary)!important}
+
+    /* Header strip */
+    .page-header{
+        background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);
+        border-radius:0 0 24px 24px;color:var(--white);
+        padding:2.25rem 1rem;margin:-24px 0 2rem;position:relative;overflow:hidden;
+        box-shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+    .page-header::before{
+        content:'';position:absolute;inset:0;opacity:.35;
+        background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%231ABC9C' fill-opacity='0.25' d='M0,128L48,117.3C96,107,192,85,288,112C384,139,480,213,576,218.7C672,224,768,160,864,138.7C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") center/cover no-repeat;
+    }
+    .page-title{
+        font-weight:800;margin:0;background:linear-gradient(to right,var(--white),var(--secondary));
+        -webkit-background-clip:text;-webkit-text-fill-color:transparent
+    }
+
+    /* Card & form */
+    .card{
+        background-color:var(--card-bg);border:none;border-radius:16px;overflow:hidden;
+        box-shadow:0 12px 30px rgba(0,0,0,.28);transition:transform .3s ease, box-shadow .3s ease
+    }
+    .card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,.35)}
+    .card-body{padding:2rem}
+
+    .form-label{color:var(--white);font-weight:600}
+    .form-control, .form-select, textarea{
+        background-color:var(--background-alt);border:1px solid rgba(255,255,255,.08);
+        color:var(--text-primary);border-radius:12px;padding:.7rem .9rem;
+        transition:border-color .2s, box-shadow .2s
+    }
+    .form-control:focus, .form-select:focus, textarea:focus{
+        border-color:var(--secondary);box-shadow:0 0 0 .2rem rgba(26,188,156,.15)
+    }
+    .text-danger{color:var(--error)!important}
+
+    /* Alerts */
+    .alert{
+        background:linear-gradient(135deg, rgba(52,152,219,.12), rgba(26,188,156,.12));
+        border:1px solid rgba(52,152,219,.25);color:var(--text-primary);border-radius:12px
+    }
+
+    /* Buttons (normal sizing) */
+    .btn-primary{
+        background:linear-gradient(135deg,var(--accent) 0%,var(--accent-alt) 100%);
+        border:none;font-weight:600;border-radius:50px;
+        transition:all .3s ease;box-shadow:0 4px 15px rgba(230,126,34,.3);position:relative;overflow:hidden;z-index:1
+    }
+    .btn-primary::before{
+        content:'';position:absolute;inset:0;width:0%;height:100%;
+        background:linear-gradient(135deg,var(--accent-alt) 0%,var(--accent) 100%);
+        transition:all .5s ease;z-index:-1;border-radius:50px
+    }
+    .btn-primary:hover::before{width:100%}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(230,126,34,.4)}
+
+    .btn-secondary{
+        background-color:var(--primary-light);border:none;color:var(--white);
+        border-radius:50px;transition:transform .2s, box-shadow .2s
+    }
+    .btn-secondary:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(0,0,0,.25)}
+
+    /* Animations */
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .animate{opacity:0;animation:fadeInUp .6s ease forwards}
+    .delay-1{animation-delay:.15s}.delay-2{animation-delay:.3s}
+</style>
+
+<div class="container py-4">
+    <!-- Fancy header -->
+    <div class="page-header animate">
+        <div class="container px-0 d-flex justify-content-between align-items-center">
+            <h1 class="page-title" th:text="${noticeId} != null ? 'Edit Bill Notice' : 'Create Bill Notice'">Bill Notice Form</h1>
+            <a th:href="@{/admin/bill-notices}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Bill Notices
+            </a>
+        </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="card animate delay-1">
+        <div class="card-body">
+            <form th:action="${noticeId} != null ? @{/admin/bill-notices/{id}/edit(id=${noticeId})} : @{/admin/bill-notices/create}"
+                  th:object="${notice}" method="post">
+
+                <input type="hidden" th:field="*{universityId}">
+
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title *</label>
+                    <input type="text" class="form-control" id="title" th:field="*{title}" required>
+                    <div class="text-danger mt-1" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="message" class="form-label">Message *</label>
+                    <textarea class="form-control" id="message" th:field="*{message}" rows="5" required></textarea>
+                    <div class="text-danger mt-1" th:if="${#fields.hasErrors('message')}" th:errors="*{message}"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="validFrom" class="form-label">Valid From *</label>
+                        <input type="date" class="form-control" id="validFrom" th:field="*{validFrom}" required>
+                        <div class="text-danger mt-1" th:if="${#fields.hasErrors('validFrom')}" th:errors="*{validFrom}"></div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="validTo" class="form-label">Valid To *</label>
+                        <input type="date" class="form-control" id="validTo" th:field="*{validTo}" required>
+                        <div class="text-danger mt-1" th:if="${#fields.hasErrors('validTo')}" th:errors="*{validTo}"></div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i>
+                    This notice will be visible to all students and parents in the university during the validity period.
+                    Email notifications will be sent when the notice is created.
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a th:href="@{/admin/bill-notices}" class="btn btn-secondary me-md-2">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="fragments/layout :: footer" class="mt-auto"></footer>
+
+<!-- Small animation hook -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const animated = document.querySelectorAll('.animate');
+        const io = new IntersectionObserver((entries)=>{
+            entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('animated'); io.unobserve(e.target);} });
+        }, {threshold:0.1});
+        animated.forEach(el=>io.observe(el));
+    });
+</script>
+</body>
+</html>

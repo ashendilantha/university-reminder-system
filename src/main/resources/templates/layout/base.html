@@ -1,0 +1,335 @@
+<!--<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} ?: 'University Reminder System'">University Reminder System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <th:block th:replace="${links} ?: ~{}"></th:block>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        !-- Sidebar Navigation --
+        <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" id="sidebarMenu">
+            <div th:replace="~{layout/navigation :: navigation}"></div>
+        </div>
+
+        !-- Main Content --
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2" th:text="${pageTitle} ?: 'Dashboard'">Dashboard</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div th:replace="${actions} ?: ~{}"></div>
+                </div>
+            </div>
+
+            !-- Alerts --
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <span th:text="${successMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${errorMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            !-- Main Content --
+            <div th:replace="${content} ?: ~{}"></div>
+        </main>
+    </div>
+</div>
+
+!-- Footer --
+<footer class="footer mt-auto py-3 bg-light">
+    <div class="container text-center">
+        <span class="text-muted">&copy; 2025 University Reminder System</span>
+    </div>
+</footer>
+
+!-- Scripts --
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
+<th:block th:replace="${scripts} ?: ~{}"></th:block>
+</body>
+</html>-->
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} ?: 'University Reminder System'">University Reminder System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <th:block th:replace="${links} ?: ~{}"></th:block>
+    <style>
+        :root {
+            --primary: #2C3E50;
+            --primary-dark: #1a2530;
+            --primary-light: #34495e;
+            --secondary: #1ABC9C;
+            --secondary-light: #3498DB;
+            --accent: #E67E22;
+            --accent-alt: #2ECC71;
+            --error: #E74C3C;
+            --warning: #F1C40F;
+            --background: #121212;
+            --background-alt: #1e1e1e;
+            --card-bg: #1e2a38;
+            --text-primary: #e4e6eb;
+            --text-secondary: #b0b3b8;
+            --white: #FFFFFF;
+            --dark: #0d1117;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+
+        .sidebar {
+            background-color: var(--primary-dark);
+            color: var(--text-primary);
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.4);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 1rem;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar .nav-link {
+            color: var(--text-secondary);
+            font-weight: 500;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: var(--primary-light);
+            color: var(--white);
+        }
+
+        .sidebar .nav-link.active {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
+            color: var(--white);
+        }
+
+        main {
+            margin-left: 0;
+            padding-top: 4rem;
+        }
+
+        .border-bottom {
+            border-bottom: 1px solid var(--primary-light) !important;
+        }
+
+        .alert {
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--primary-light);
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, rgba(26, 188, 156, 0.2) 0%, rgba(52, 152, 219, 0.2) 100%);
+            color: var(--text-primary);
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.2) 0%, rgba(192, 57, 43, 0.2) 100%);
+            color: var(--text-primary);
+        }
+
+        .btn-close {
+            filter: invert(0.8);
+        }
+
+        .footer {
+            background-color: var(--primary-dark);
+            color: var(--text-secondary);
+            margin-top: auto;
+            padding: 2.5rem 0;
+            border-top: 1px solid var(--primary-light);
+        }
+
+        .h2 {
+            color: var(--white);
+            font-weight: 700;
+            background: linear-gradient(to right, var(--white), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-toolbar .btn {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-alt) 100%);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            color: var(--white);
+        }
+
+        .btn-toolbar .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--accent-alt) 0%, var(--accent) 100%);
+            transition: all 0.5s ease;
+            z-index: -1;
+            border-radius: 50px;
+        }
+
+        .btn-toolbar .btn:hover::before {
+            width: 100%;
+        }
+
+        .btn-toolbar .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(230, 126, 34, 0.4);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        @media (max-width: 767.98px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: -100%;
+                width: 250px;
+                transition: all 0.3s ease;
+            }
+
+            .sidebar.show {
+                left: 0;
+            }
+
+            main {
+                margin-left: 0;
+                padding-top: 3rem;
+            }
+
+            .h2 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            main {
+                margin-left: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar Navigation -->
+        <div class="col-md-3 col-lg-2 d-md-block sidebar collapse" id="sidebarMenu">
+            <div th:replace="~{layout/navigation :: navigation}"></div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom animate">
+                <h1 class="h2" th:text="${pageTitle} ?: 'Dashboard'">Dashboard</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div th:replace="${actions} ?: ~{}"></div>
+                </div>
+            </div>
+
+            <!-- Alerts -->
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show animate" role="alert">
+                <span th:text="${successMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show animate" role="alert">
+                <span th:text="${errorMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <!-- Main Content -->
+            <div th:replace="${content} ?: ~{}" class="animate"></div>
+        </main>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer mt-auto py-3">
+    <div class="container text-center">
+        <span class="text-muted">&copy; 2025 University Reminder System</span>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script th:src="@{/js/main.js}"></script>
+<th:block th:replace="${scripts} ?: ~{}"></th:block>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate elements when they come into view
+        const animatedElements = document.querySelectorAll('.animate');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        animatedElements.forEach(el => {
+            observer.observe(el);
+        });
+
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    });
+</script>
+</body>
+</html>
