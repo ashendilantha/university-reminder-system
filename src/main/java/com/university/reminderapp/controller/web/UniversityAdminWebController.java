@@ -82,6 +82,11 @@ public class UniversityAdminWebController {
         User currentUser = userService.getCurrentUser();
         University university = currentUser.getUniversity();
 
+        // Enforce password only on creation (editing form hides password)
+        if (request.getPassword() == null || request.getPassword().isBlank()) {
+            result.rejectValue("password", "NotBlank", "Password is required");
+        }
+
         if (result.hasErrors()) {
             model.addAttribute("university", university);
             model.addAttribute("userId", null);
@@ -144,9 +149,15 @@ public class UniversityAdminWebController {
     @PostMapping("/users/{id}/delete")
     public String deleteUser(@PathVariable Long id,
                              RedirectAttributes redirectAttributes) {
-        User currentUser = userService.getCurrentUser();
-        userService.deleteUser(id, currentUser);
-        redirectAttributes.addFlashAttribute("success", "User deleted successfully!");
+        try {
+            User currentUser = userService.getCurrentUser();
+            userService.deleteUser(id, currentUser);
+            redirectAttributes.addFlashAttribute("success", "User deleted successfully!");
+        } catch (com.university.reminderapp.exception.BadRequestException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "An unexpected error occurred while deleting the user.");
+        }
         return "redirect:/admin/university/users";
     }
 

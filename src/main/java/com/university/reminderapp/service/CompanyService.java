@@ -60,6 +60,14 @@ public class CompanyService {
         return companyRepository.save(company);
     }
 
+    public Company activateCompany(Long id, User currentUser) {
+        Company company = getCompanyById(id);
+        company.setStatus("ACTIVE");
+        company.setUpdatedBy(currentUser);
+
+        return companyRepository.save(company);
+    }
+
     public void deleteCompany(Long id, User currentUser) {
         Company company = getCompanyById(id);
         company.setStatus("DELETED");

@@ -12,7 +12,7 @@ public class UserRequest {
     @Email(message = "Please provide a valid email")
     private String email;
 
-    @NotBlank(message = "Password is required")
+    // Password is optional when editing; required only during creation
     private String password;
 
     @NotBlank(message = "First name is required")

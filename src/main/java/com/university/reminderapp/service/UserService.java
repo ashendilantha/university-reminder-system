@@ -386,11 +386,13 @@ import com.university.reminderapp.dto.request.UserRequest;
 import com.university.reminderapp.exception.BadRequestException;
 import com.university.reminderapp.exception.ResourceNotFoundException;
 import com.university.reminderapp.model.Bill;
+import com.university.reminderapp.model.Event;
 import com.university.reminderapp.model.Review;
 import com.university.reminderapp.model.University;
 import com.university.reminderapp.model.User;
 import com.university.reminderapp.repository.BillRepository;
 import com.university.reminderapp.repository.DeliveryLogRepository;
+import com.university.reminderapp.repository.EventRepository;
 import com.university.reminderapp.repository.NotificationRepository;
 import com.university.reminderapp.repository.ReviewRepository;
 import com.university.reminderapp.repository.UserRepository;
@@ -427,6 +429,9 @@ public class UserService {
 
     @Autowired
     private DeliveryLogRepository deliveryLogRepository;
+
+    @Autowired
+    private EventRepository eventRepository;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -629,6 +634,15 @@ public class UserService {
         User user = getUserById(id);
         if (user.getId().equals(currentUser.getId())) {
             throw new BadRequestException("Cannot delete yourself");
+        }
+
+        // Check if EVENT_MANAGER has created events
+        if ("EVENT_MANAGER".equals(user.getRole())) {
+            List<Event> createdEvents = eventRepository.findByCreatedBy(user);
+            if (!createdEvents.isEmpty()) {
+                throw new BadRequestException("Cannot delete this user because they have created " + 
+                    createdEvents.size() + " event(s). Please transfer or delete the events first.");
+            }
         }
 
         // Detach students if deleting a parent

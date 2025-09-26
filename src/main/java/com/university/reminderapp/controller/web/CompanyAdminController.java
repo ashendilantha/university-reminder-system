@@ -94,6 +94,15 @@ public class CompanyAdminController {
         return "redirect:/admin/companies";
     }
 
+    @PostMapping("/{id}/activate")
+    public String activateCompany(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        User currentUser = userService.getCurrentUser();
+        companyService.activateCompany(id, currentUser);
+
+        redirectAttributes.addFlashAttribute("success", "Company activated successfully");
+        return "redirect:/admin/companies";
+    }
+
     @PostMapping("/{id}/delete")
     public String deleteCompany(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         User currentUser = userService.getCurrentUser();

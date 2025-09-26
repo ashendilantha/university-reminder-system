@@ -5,9 +5,9 @@
 <!--</head>-->
 <!--<body>-->
 <!--    <nav th:replace="fragments/layout :: navbar"></nav>-->
-<!--    -->
+
 <!--    <div th:replace="fragments/layout :: alerts"></div>-->
-<!--    -->
+
 <!--    <div class="container py-4">-->
 <!--        <div class="d-flex justify-content-between align-items-center mb-4">-->
 <!--            <h1>Bill Notices</h1>-->
@@ -15,7 +15,7 @@
 <!--                <i class="bi bi-plus-circle"></i> Add New Bill Notice-->
 <!--            </a>-->
 <!--        </div>-->
-<!--        -->
+
 <!--        <div class="card mb-4">-->
 <!--            <div class="card-header bg-primary text-white">-->
 <!--                <h5 class="mb-0">Filter Notices</h5>-->
@@ -32,7 +32,7 @@
 <!--                    </div>-->
 <!--                    <div class="col-md-4">-->
 <!--                        <label for="searchTerm" class="form-label">Search</label>-->
-<!--                        <input type="text" class="form-control" id="searchTerm" name="search" -->
+<!--                        <input type="text" class="form-control" id="searchTerm" name="search"-->
 <!--                               placeholder="Search in title or message" th:value="${param.search != null ? param.search[0] : ''}">-->
 <!--                    </div>-->
 <!--                    <div class="col-md-4 d-flex align-items-end">-->
@@ -41,7 +41,7 @@
 <!--                </form>-->
 <!--            </div>-->
 <!--        </div>-->
-<!--        -->
+
 <!--        <div class="card">-->
 <!--            <div class="card-body">-->
 <!--                <div class="table-responsive">-->
@@ -64,11 +64,11 @@
 <!--                                <td th:text="${#temporals.format(notice.validFrom, 'yyyy-MM-dd')}">2025-09-01</td>-->
 <!--                                <td th:text="${#temporals.format(notice.validTo, 'yyyy-MM-dd')}">2025-10-01</td>-->
 <!--                                <td>-->
-<!--                                    <span class="badge bg-success" -->
+<!--                                    <span class="badge bg-success"-->
 <!--                                          th:if="${#temporals.createToday().isBefore(notice.validTo) && #temporals.createToday().isAfter(notice.validFrom)}">-->
 <!--                                        Active-->
 <!--                                    </span>-->
-<!--                                    <span class="badge bg-secondary" -->
+<!--                                    <span class="badge bg-secondary"-->
 <!--                                          th:if="${#temporals.createToday().isAfter(notice.validTo) || #temporals.createToday().isBefore(notice.validFrom)}">-->
 <!--                                        Inactive-->
 <!--                                    </span>-->
@@ -85,7 +85,7 @@
 <!--                                        </a>-->
 <!--                                        <form th:action="@{/admin/bill-notices/{id}/delete(id=${notice.id})}" method="post" style="display: inline;"-->
 <!--                                              sec:authorize="hasRole('UNIVERSITY_ADMIN')">-->
-<!--                                            <button type="submit" class="btn btn-sm btn-danger" -->
+<!--                                            <button type="submit" class="btn btn-sm btn-danger"-->
 <!--                                                    onclick="return confirm('Are you sure you want to delete this notice?')">-->
 <!--                                                <i class="bi bi-trash"></i> Delete-->
 <!--                                            </button>-->
@@ -102,7 +102,7 @@
 <!--            </div>-->
 <!--        </div>-->
 <!--    </div>-->
-<!--    -->
+
 <!--    <footer th:replace="fragments/layout :: footer"></footer>-->
 <!--</body>-->
 <!--</html>-->
@@ -110,136 +110,81 @@
 
 
 
+
+
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en" data-bs-theme="dark">
+<html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/layout :: head('Bill Notices')">
     <title>Bill Notices - University Reminder System</title>
+    <style>
+        .card {
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--primary-dark) 100%);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+        }
+        .card-header {
+            background: var(--primary-dark);
+            color: var(--white);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+        .form-control, .form-select {
+            background-color: var(--input-bg);
+            color: var(--white);
+            border: 1px solid var(--text-secondary);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 5px rgba(0, 128, 255, 0.5);
+        }
+        .form-label {
+            color: var(--white);
+            font-weight: 600;
+        }
+        .table-dark {
+            color: var(--white);
+            background-color: var(--card-bg);
+            border-radius: 8px;
+        }
+        .table-custom-striped tbody tr:nth-child(odd) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        .badge {
+            color: var(--white);
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+        }
+        .btn-sm {
+            padding: 0.4rem 1.5rem;
+            font-size: 0.85rem;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        .btn-warning:hover {
+            background-color: var(--warning-dark);
+        }
+        .btn-danger:hover {
+            background-color: var(--danger-dark);
+        }
+    </style>
 </head>
 <body>
-<nav th:replace="fragments/layout :: navbar" class="navbar navbar-expand-lg navbar-dark fixed-top"></nav>
+<nav th:replace="fragments/layout :: navbar"></nav>
 
 <div th:replace="fragments/layout :: alerts"></div>
 
-<!-- Page Styles (match index.html theme; keep action buttons SMALL) -->
-<style>
-    :root{
-        --primary:#2C3E50;--primary-dark:#1a2530;--primary-light:#34495e;
-        --secondary:#1ABC9C;--secondary-light:#3498DB;
-        --accent:#E67E22;--accent-alt:#2ECC71;
-        --error:#E74C3C;--warning:#F1C40F;
-        --background:#121212;--background-alt:#1e1e1e;
-        --card-bg:#1e2a38;--text-primary:#e4e6eb;--text-secondary:#b0b3b8;--white:#FFFFFF;--dark:#0d1117;
-    }
-    body{
-        background-color:var(--background);color:var(--text-primary);
-        min-height:100vh;display:flex;flex-direction:column;
-        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;line-height:1.6;
-        padding-top:72px;
-    }
-    .navbar{background-color:var(--primary-dark)!important;box-shadow:0 2px 15px rgba(0,0,0,.4);padding:.8rem 1rem}
-    .navbar-brand,.nav-link{color:var(--white)!important;font-weight:500}
-    .navbar-nav .nav-link:hover{color:var(--secondary)!important}
-
-    /* Header strip */
-    .page-header{
-        background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);
-        border-radius:0 0 24px 24px;color:var(--white);
-        padding:2.25rem 1rem;margin:-24px 0 2rem;position:relative;overflow:hidden;
-        box-shadow:0 10px 30px rgba(0,0,0,.35);
-    }
-    .page-header::before{
-        content:'';position:absolute;inset:0;opacity:.35;
-        background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%231ABC9C' fill-opacity='0.25' d='M0,128L48,117.3C96,107,192,85,288,112C384,139,480,213,576,218.7C672,224,768,160,864,138.7C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") center/cover no-repeat;
-    }
-    .page-title{
-        font-weight:800;margin:0;background:linear-gradient(to right,var(--white),var(--secondary));
-        -webkit-background-clip:text;-webkit-text-fill-color:transparent
-    }
-
-    /* Cards */
-    .card{
-        background-color:var(--card-bg);border:none;border-radius:16px;overflow:hidden;
-        box-shadow:0 12px 30px rgba(0,0,0,.28);transition:transform .3s ease, box-shadow .3s ease
-    }
-    .card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,.35)}
-    .card-header{
-        background:linear-gradient(135deg,var(--secondary) 0%,var(--secondary-light) 100%)!important;
-        color:#0d1117;border:none
-    }
-    .card-body{padding:1.75rem}
-
-    /* Forms */
-    .form-label{color:var(--white);font-weight:600}
-    .form-control,.form-select{
-        background-color:var(--background-alt);border:1px solid rgba(255,255,255,.08);
-        color:var(--text-primary);border-radius:12px;padding:.6rem .9rem;
-        transition:border-color .2s, box-shadow .2s
-    }
-    .form-control:focus,.form-select:focus{
-        border-color:var(--secondary);box-shadow:0 0 0 .2rem rgba(26,188,156,.15)
-    }
-
-    /* Table */
-    .table{color:var(--text-primary);margin-bottom:0}
-    .table thead th{
-        border-bottom:1px solid rgba(255,255,255,.08);
-        color:var(--white);font-weight:600;background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(0,0,0,0))
-    }
-    .table td,.table th{border-color:rgba(255,255,255,.08);vertical-align:middle}
-    .table-hover tbody tr:hover{background-color:rgba(255,255,255,.03)}
-
-    /* Badges */
-    .badge{padding:.5em .7em;border-radius:10px;font-weight:600}
-    .badge.bg-success{background:linear-gradient(135deg,#1f9d78,#2ECC71)}
-    .badge.bg-secondary{background:linear-gradient(135deg,#5b6b7a,#95a5a6);color:#0d1117}
-
-    /* Buttons (keep small/normal sizes) */
-    .btn-primary{
-        background:linear-gradient(135deg,var(--accent) 0%,var(--accent-alt) 100%);
-        border:none;font-weight:600;border-radius:50px;
-        transition:all .3s ease;box-shadow:0 4px 15px rgba(230,126,34,.3);position:relative;overflow:hidden;z-index:1
-    }
-    .btn-primary::before{
-        content:'';position:absolute;inset:0;width:0%;height:100%;
-        background:linear-gradient(135deg,var(--accent-alt) 0%,var(--accent) 100%);
-        transition:all .5s ease;z-index:-1;border-radius:50px
-    }
-    .btn-primary:hover::before{width:100%}
-    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(230,126,34,.4)}
-
-    .btn-secondary{
-        background-color:var(--primary-light);border:none;color:var(--white);
-        border-radius:50px;transition:transform .2s, box-shadow .2s
-    }
-    .btn-secondary:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(0,0,0,.25)}
-
-    .btn-warning{background-color:#b58900;border:none;color:#fff;border-radius:12px}
-    .btn-warning:hover{filter:brightness(1.08)}
-    .btn-danger{border-radius:12px}
-
-    /* Keep Actions narrow */
-    th:last-child, td:last-child{white-space:nowrap}
-    .actions-col{width:260px}
-
-    /* Animations */
-    @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-    .animate{opacity:0;animation:fadeInUp .6s ease forwards}
-    .delay-1{animation-delay:.15s}.delay-2{animation-delay:.3s}
-</style>
-
 <div class="container py-4">
-    <!-- Fancy header -->
-    <div class="page-header animate">
-        <div class="container px-0 d-flex justify-content-between align-items-center">
-            <h1 class="page-title">Bill Notices</h1>
-            <a th:href="@{/admin/bill-notices/create}" class="btn btn-primary" sec:authorize="hasRole('UNIVERSITY_ADMIN')">
-                <i class="bi bi-plus-circle"></i> Add New Bill Notice
-            </a>
-        </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="section-title">Bill Notices</h1>
+        <a th:href="@{/admin/bill-notices/create}" class="btn btn-sm btn-primary" sec:authorize="hasRole('UNIVERSITY_ADMIN')">
+            <i class="bi bi-plus-circle"></i> Add New Bill Notice
+        </a>
     </div>
 
-    <!-- Filter -->
-    <div class="card mb-4 animate delay-1">
+    <div class="card animate mb-4">
         <div class="card-header">
             <h5 class="mb-0">Filter Notices</h5>
         </div>
@@ -259,17 +204,16 @@
                            placeholder="Search in title or message" th:value="${param.search != null ? param.search[0] : ''}">
                 </div>
                 <div class="col-md-4 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                    <button type="submit" class="btn btn-sm btn-primary w-100">Apply Filters</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Table -->
-    <div class="card animate delay-2">
+    <div class="card animate">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
+                <table class="table table-dark table-hover table-custom-striped">
                     <thead>
                     <tr>
                         <th>ID</th>
@@ -278,7 +222,7 @@
                         <th>Valid To</th>
                         <th>Status</th>
                         <th>Created By</th>
-                        <th class="actions-col">Actions</th>
+                        <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -288,18 +232,18 @@
                         <td th:text="${#temporals.format(notice.validFrom, 'yyyy-MM-dd')}">2025-09-01</td>
                         <td th:text="${#temporals.format(notice.validTo, 'yyyy-MM-dd')}">2025-10-01</td>
                         <td>
-                                    <span class="badge bg-success"
+                                    <span class="badge badge-success"
                                           th:if="${#temporals.createToday().isBefore(notice.validTo) && #temporals.createToday().isAfter(notice.validFrom)}">
                                         Active
                                     </span>
-                            <span class="badge bg-secondary"
+                            <span class="badge badge-secondary"
                                   th:if="${#temporals.createToday().isAfter(notice.validTo) || #temporals.createToday().isBefore(notice.validFrom)}">
                                         Inactive
                                     </span>
                         </td>
                         <td th:text="${notice.createdBy.firstName + ' ' + notice.createdBy.lastName}">John Doe</td>
                         <td>
-                            <div class="btn-group" role="group">
+                            <div class="btn-group" role="group" style="gap: 0.5rem;">
                                 <a th:href="@{/admin/bill-notices/{id}(id=${notice.id})}" class="btn btn-sm btn-primary">
                                     <i class="bi bi-eye"></i> View
                                 </a>
@@ -318,7 +262,7 @@
                         </td>
                     </tr>
                     <tr th:if="${notices.empty}">
-                        <td colspan="7" class="text-center text-muted">No bill notices found</td>
+                        <td colspan="7" class="text-center text-secondary">No bill notices found</td>
                     </tr>
                     </tbody>
                 </table>
@@ -327,17 +271,6 @@
     </div>
 </div>
 
-<footer th:replace="fragments/layout :: footer" class="mt-auto"></footer>
-
-<!-- Small animation hook -->
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const animated = document.querySelectorAll('.animate');
-        const io = new IntersectionObserver((entries)=>{
-            entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('animated'); io.unobserve(e.target);} });
-        }, {threshold:0.1});
-        animated.forEach(el=>io.observe(el));
-    });
-</script>
+<footer th:replace="fragments/layout :: footer"></footer>
 </body>
 </html>

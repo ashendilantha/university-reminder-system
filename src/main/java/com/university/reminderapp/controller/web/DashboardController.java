@@ -503,4 +503,11 @@ public class DashboardController {
         model.addAttribute("upcomingEvents", eventService.getUpcomingEvents(universityId).stream().limit(5).collect(Collectors.toList()));
         return "dashboards/parent";
     }
+
+    // Convenience redirect so legacy /admin/bills links work
+    @GetMapping("/admin/bills")
+    @PreAuthorize("hasRole('UNIVERSITY_ADMIN')")
+    public String adminBillsRedirect() {
+        return "redirect:/bills";
+    }
 }
